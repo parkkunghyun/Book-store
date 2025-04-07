@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FaGoogle } from "react-icons/fa";
 import {useForm} from 'react-hook-form';
+import Swal from 'sweetalert2';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
     const [message, setMessage]  = useState(""); // error message
+    const {loginUser, signInWithGoogle} = useAuth();
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -12,9 +16,37 @@ const Login = () => {
         formState: { errors },
       } = useForm()
 
-    const onSubmit = (data) => console.log(data);
-    const handleGoogleSignIn = () => {
+    const onSubmit = async (data) => {
+            console.log(data);
+            try {
+                await loginUser(data.email, data.password);
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "성공적으로 로그인 되었습니다.",
+                    timer: 1500
+                })
+                navigate("/");
+            } catch(e) {
+                console.log(e);
+                setMessage("유효한 이메일과 비밀번호를 입력해주세요.");
+            }
+        }
+    const handleGoogleSignIn = async() => {
         // google OAuth
+        try {
+            await signInWithGoogle()
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "성공적으로 로그인 되었습니다.",
+                timer: 1500
+            })
+            navigate("/");
+        } catch(e) {
+            console.log(e);
+            setMessage("구글 로그인에 실패했습니다.");
+        }
     }
 
   return (

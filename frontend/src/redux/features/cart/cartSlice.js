@@ -34,7 +34,6 @@ export const cartSlice = createSlice({
 
         removeFromCart: (state, action) => {
             state.cartItems = state.cartItems.filter((book) => book._id !== action.payload._id);
-
         },
         clearCart: (state) => {
             state.cartItems = []
@@ -43,5 +42,6 @@ export const cartSlice = createSlice({
 
 });
 
+// createSlice 가 자동으로 만들어준 action 생성함수들 모음! dispatch에 사용
 export const {addToCart, removeFromCart, clearCart} = cartSlice.actions;
-export default cartSlice.reducer;
+export default cartSlice.reducer; // store 등록할때 사용, state바꾸는 함수 묶음

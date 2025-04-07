@@ -7,6 +7,7 @@ import { FaCartShopping } from "react-icons/fa6";
 import avatarImg from "../assets/avatar.png";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useAuth } from "../context/AuthContext";
 
 const navigation = [
     {name: "Dashboard", href: "/dashboard"},
@@ -16,10 +17,14 @@ const navigation = [
 ]
 
 const Navbar = () => {
-    const currentUser = false;
+    const {logout, currentUser} = useAuth();
+
     const [isDropdownOpen, setIsDropDownOpen] = useState(false);
     const cartItems = useSelector(state => state.cart.cartItems);
     
+    const handleLogout = () => {
+        logout();
+    }
   return (
     <header className="max-w-screen-2xl mx-auto px-4 py-6">
         <nav className="flex items-center justify-between ">
@@ -58,9 +63,14 @@ const Navbar = () => {
                                                 </li>
                                             ))
                                         }
+                                        <li>
+                                            <button className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                                                onClick={handleLogout}>Logout</button>
+                                        </li>
                                     </ul>
                                 </div>
                             }
+                            
                         </>
                         :  <Link to="/login"> <FaRegUser className="size-6"/> </Link>
                     }
