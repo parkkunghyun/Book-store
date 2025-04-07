@@ -6,6 +6,7 @@ import { FaRegHeart } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import avatarImg from "../assets/avatar.png";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const navigation = [
     {name: "Dashboard", href: "/dashboard"},
@@ -15,8 +16,9 @@ const navigation = [
 ]
 
 const Navbar = () => {
-    const currentUser = true;
+    const currentUser = false;
     const [isDropdownOpen, setIsDropDownOpen] = useState(false);
+    const cartItems = useSelector(state => state.cart.cartItems);
     
   return (
     <header className="max-w-screen-2xl mx-auto px-4 py-6">
@@ -69,6 +71,9 @@ const Navbar = () => {
 
                 <Link to="/cart" className="bg-primary gap-1 p-1 sm:px-6 py-2 flex items-center rounded-sm">
                     <FaCartShopping  className="size-4"/>
+                    {
+                        cartItems.length > 0 && <span className="text-sm font-semibold sm:ml-1">{cartItems.length}</span>
+                    }
                     <span className="text-sm font-semibold sm:ml-1">0</span>
                 </Link>
             </div>
