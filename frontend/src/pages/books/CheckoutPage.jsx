@@ -1,12 +1,15 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useForm } from "react-hook-form"
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from'sweetalert2';
 import { useAuth } from '../../context/AuthContext';
+import { useCreateOrderMutation } from '../../redux/features/orders/ordersApi';
 
 const CheckoutPage = () => {
     const {currentUser} = useAuth();
+    const navigate = useNavigate();
+    
     const cartItems = useSelector(state => state.cart.cartItems);
     const totalPrice = cartItems.reduce((acc, item) => acc + item.newPrice, 0).toFixed(2);
     
@@ -16,6 +19,8 @@ const CheckoutPage = () => {
         watch,
         formState: { errors },
     } = useForm()
+
+    const [createOrder, {isLoading, error}] = useCreateOrderMutation()
 
     const [isChecked, setIsChecked] = useState(false)
     const onSubmit = async (data) => {
@@ -34,7 +39,24 @@ const CheckoutPage = () => {
         }
 
         console.log(newOrder)
+
+        try{
+            await createOrder(newOrder).unwrap()
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "성공적으로 주문 되었습니다.",
+                timer: 1500
+            });
+            navigate("/orders");
+        } catch(error) {
+            console.log("Error create an order", error);
+            alert("Failed to place an order");
+        }
     }
+
+    if (isLoading) return <div>Loading ...</div>
+    
 
     return (
         <section>
